@@ -51,7 +51,7 @@ def wechat():
             content.text = reply_content
             reply.append(content)
 
-            response_xml = ET.tostring(reply, encoding='utf-8')
+            response_xml = ElementTree.tostring(reply, encoding='utf-8')
             response = make_response(response_xml)
             response.content_type = 'application/xml'
             return response
