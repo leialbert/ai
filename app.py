@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify,make_response
 import hashlib
 import openai
-from xml.etree import ElementTree as ET
-from xml.etree.ElementTree import Element, SubElement, tostring
+from xml.etree import ElementTree
+from xml.etree.ElementTree import Element,tostring
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -23,32 +23,40 @@ def wechat():
         if check_signature(token, signature, timestamp, nonce):
             return make_response(echostr)
     elif request.method == 'POST':
-        xml_data = request.get_data()
-        xml_tree = ET.fromstring(xml_data)
+        xml_data = request.data
+        xml_tree = ElementTree.fromstring(xml_data)
         msg_type = xml_tree.find('MsgType').text
         if msg_type == 'text':
             content = xml_tree.find('Content').text
-            user_openid = xml_tree.find('FromUserName').text
-            public_openid = xml_tree.find('ToUserName').text
-            if content == '你好':
-                reply = '你好呀'
-            else:
-                reply_content = chat_gpt_response(content)
-                reply = ET.Element('xml')
-                to_user_name = ET.SubElement(reply, 'ToUserName')
-                to_user_name.text = user_openid
-                from_user_name = ET.SubElement(reply, 'FromUserName')
-                from_user_name.text = public_openid
-                create_time = ET.SubElement(reply, 'CreateTime')
-                create_time.text = str(int(time.time()))
-                msg_type = ET.SubElement(reply, 'MsgType')
-                msg_type.text = 'text'
-                content = ET.SubElement(reply, 'Content')
-                content.text = reply_content
-                response_xml = ET.tostring(reply, encoding='utf-8')
-                response = make_response(response_xml)
-                response.content_type = 'application/xml'
-                return response
+            user_open_id = xml_tree.find('FromUserName').text
+            public_account_id = xml_tree.find('ToUserName').text
+            reply_content = chat_gpt_response(content)
+            reply = Element('xml')
+            to_user_name = Element('ToUserName')
+            to_user_name.text = user_open_id
+            reply.append(to_user_name)
+            from_user_name = Element('FromUserName')
+            from_user_name.text = public_account_id
+            reply.append(from_user_name)
+
+            create_time = Element('CreateTime')
+            create_time.text = str(int(time.time()))
+            reply.append(create_time)
+
+            msg_type = Element('MsgType')
+            msg_type.text = 'text'
+            reply.append(msg_type)
+
+            content=Element('Content')
+            content.text = reply_content
+            reply.append(content)
+
+            response_xml = ET.tostring(reply, encoding='utf-8')
+            response = make_response(response_xml)
+            response.content_type = 'application/xml'
+            return response
+    else:
+        return 'error'
 def check_signature(token, signature, timestamp, nonce):
     try:
         tmp_list = [token, timestamp, nonce]
