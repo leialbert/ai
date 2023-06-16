@@ -70,19 +70,33 @@ def check_signature(token, signature, timestamp, nonce):
     except Exception as e:
         print(e)
         return False
+# def chat_gpt_response(prompt):
+#     response = openai.Completion.create(
+#         engine="gpt-3.5-turbo",
+#         prompt=prompt,
+#         temperature=0.9,
+#         max_tokens=150,
+#         top_p=1,
+#         frequency_penalty=0,
+#         presence_penalty=0.6,
+#         n=1,
+#         stop=None,
+#     )
+#     return response.choices[0].text.strip()
 def chat_gpt_response(prompt):
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=prompt,
-        temperature=0.5,
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",  # replace with your actual GPT-3.5 chat model ID
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
         max_tokens=150,
-        # top_p=1,
-        # frequency_penalty=0,
-        # presence_penalty=0.6,
-        n=1,
-        stop=None,
     )
-    return response.choices[0].text.strip()
+    print(prompt)
+    print("\n")
+    print(response)
+    return response['choices'][0]['message']['content']
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=8022)
