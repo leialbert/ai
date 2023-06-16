@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 @app.route('/weixin', methods=['GET','POST'])
 def wechat():
-    if request.method = 'GET':
+    if request.method == 'GET':
         token = os.getenv('WECHAT_TOKEN')
         signature = request.args.get('signature')
         timestamp = request.args.get('timestamp')
@@ -22,7 +22,7 @@ def wechat():
 
         if check_signature(token, signature, timestamp, nonce):
             return make_response(echostr)
-    elif request.method = 'POST':
+    elif request.method == 'POST':
         xml_data = request.get_data()
         xml_tree = ET.fromstring(xml_data)
         msg_type = xml_tree.find('MsgType').text
