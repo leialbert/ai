@@ -71,7 +71,7 @@ def check_signature(token, signature, timestamp, nonce):
         print(e)
         return False
 # def chat_gpt_response(prompt):
-#     response = openai.Completion.create(
+#     response = openai.ChatCompletion.create(
 #         engine="gpt-3.5-turbo",
 #         prompt=prompt,
 #         temperature=0.9,
@@ -85,16 +85,12 @@ def check_signature(token, signature, timestamp, nonce):
 #     return response.choices[0].text.strip()
 def chat_gpt_response(prompt):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # replace with your actual GPT-3.5 chat model ID
+        model="gpt-3.5-turbo", 
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": prompt},
         ],
-        max_tokens=150,
+        max_tokens=200,
     )
-    print(prompt)
-    print("\n")
-    print(response)
     return response['choices'][0]['message']['content']
 
 
