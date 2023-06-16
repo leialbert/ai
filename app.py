@@ -91,7 +91,7 @@ def chat_gpt_response(prompt):
         ],
         max_tokens=200,
     )
-    return response['choices'][0]['message']['content']
+    return response['choices'][0]['message']['content'].strip()
 
 
 if __name__ == '__main__':
