@@ -3,7 +3,7 @@ import hashlib
 import openai
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element,tostring
-import os
+import os,time
 from dotenv import load_dotenv
 load_dotenv()
 
